@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class Country {
+    private String mCountryIndex;
     private String mCountryName;
     private int mCountryStability;
     private int mUSInfluence;
@@ -18,21 +19,26 @@ public class Country {
 
     public Country(String countryName) {
         this.mCountryName = countryName;
+        this.mCountryIndex = countryName.toUpperCase();
         initCountryStatus();
     }
 
     private void initCountryStatus() {
-        setCountryStability(CountryData.getCountryStability(getCountryName()));
+        setCountryStability(CountryData.getCountryStability(getCountryIndex()));
         setUSInfluence(0);
         setUSSRInfluence(0);
-        setBattleground(CountryData.isCountryBattleground(getCountryName()));
-        setNeighbors(CountryData.getNeighbors(getCountryName()));
-        setContinent(CountryData.getContinent(getCountryName()));
-        setSubContinent(CountryData.getSubContinent(getCountryName()));
+        setBattleground(CountryData.isCountryBattleground(getCountryIndex()));
+        setNeighbors(CountryData.getNeighbors(getCountryIndex()));
+        setContinent(CountryData.getContinent(getCountryIndex()));
+        setSubContinent(CountryData.getSubContinent(getCountryIndex()));
     }
 
     public String getCountryName() {
         return mCountryName;
+    }
+
+    private String getCountryIndex() {
+        return mCountryIndex;
     }
 
     public int getCountryStability() {

@@ -1,10 +1,13 @@
 package tw.wilson.twilightstruggle.country;
 
+import android.support.v4.util.ArrayMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by MSI Pro on 2017/8/2.
@@ -12,10 +15,13 @@ import java.util.ArrayList;
 
 class CountryData {
     protected static String mJsonText = "{\n" +
-            "  \"Japan\":{\"countryName\":\"Japan\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"\",\"countryStability\":4,\"neighborCountry\":[\"SouthKorea\",\"Taiwan\",\"US\",\"Philippines\"],\"isBattleground\":true},\n" +
-            "  \"Taiwan\":{\"countryName\":\"Taiwan\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"\",\"countryStability\":3,\"neighborCountry\":[\"SouthKorea\",\"Japan\"],\"isBattleground\":false},\n" +
-            "  \"Philippines\":{\"countryName\":\"Philippines\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"SoutheastAsia\",\"countryStability\":2,\"neighborCountry\":[\"Japan\",\"Indonesia\"],\"isBattleground\":false}\n" +
+            "\"JAPAN\":{\"countryName\":\"Japan\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"\",\"countryStability\":4,\"neighborCountry\":[\"SouthKorea\",\"Taiwan\",\"US\",\"Philippines\"],\"isBattleground\":true},\n" +
+            "\"TAIWAN\":{\"countryName\":\"Taiwan\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"\",\"countryStability\":3,\"neighborCountry\":[\"SouthKorea\",\"Japan\"],\"isBattleground\":false},\n" +
+            "\"PHILIPPINES\":{\"countryName\":\"Philippines\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"SoutheastAsia\",\"countryStability\":2,\"neighborCountry\":[\"Japan\",\"Indonesia\"],\"isBattleground\":false},\n" +
+            "\"SOUTHKOREA\":{\"countryName\":\"SouthKorea\",\"countryContinent\":\"Asia\",\"countrySubContinent\":\"\",\"countryStability\":3,\"neighborCountry\":[\"Japan\",\"NorthKorea\"],\"isBattleground\":true}\n" +
             "}";
+
+    protected static ArrayMap<String, ArrayList<String>> countryMap = new ArrayMap<>();
 
 
     public static int getCountryStability(String countryName) {
@@ -69,5 +75,31 @@ class CountryData {
             e.printStackTrace();
         }
         return subContinent;
+    }
+
+    public static ArrayList<String> getCountryList(String continent) {
+        ArrayList<String> countryList = countryMap.get(continent);
+        if(countryList == null) {
+            countryList = new ArrayList<>();
+            try {
+                JSONObject jsonObject = new JSONObject(mJsonText);
+                Iterator<String> iter = jsonObject.keys();
+                while (iter.hasNext()) {
+                    String key = iter.next();
+                    String countryName = jsonObject.getJSONObject(key).getString("countryName");
+                    String countryContinent = jsonObject.getJSONObject(key).getString("countryContinent");
+                    String countrySubContinent = jsonObject.getJSONObject(key).getString("countrySubContinent");
+                    if (continent.equals(countryContinent) || continent.equals(countrySubContinent)) {
+                        countryList.add(countryName);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            countryMap.put(continent, countryList);
+        }
+
+        return countryList;
     }
 }
